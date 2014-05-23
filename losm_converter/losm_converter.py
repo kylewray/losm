@@ -55,20 +55,24 @@ class Node:
 
 
 class Edge:
-    """ An edge object, which stores two node ids and the distance between them. """
+    """ An edge object, which stores two node ids, as well as the distance between them, and the
+        road's speed limit.
+    """
 
-    def __init__(self, uid1, uid2, distance):
+    def __init__(self, uid1, uid2, distance, speedLimit):
         """ The constructor of the landmark object.
 
             Parameters:
-                uid1     -- The first node's unique identifier.
-                uid2     -- The second node's unique identifier.
-                distance -- The distance from the first node to the second node.
+                uid1       -- The first node's unique identifier.
+                uid2       -- The second node's unique identifier.
+                distance   -- The distance from the first node to the second node.
+                speedLimit -- The speed limit for this road.
         """
 
         self.uid1 = uid1
         self.uid2 = uid2
         self.distance = distance
+        self.speedLimit = speedLimit
 
 
     def __str__(self):
@@ -86,10 +90,10 @@ class Landmark:
         """ The constructor for the landmark object.
 
             Parameters:
-                uid    -- The unique id of the landmark.
-                x      -- The x position of the landmark.
-                y      -- The y position of the landmark.
-                name -- 
+                uid  -- The unique id of the landmark.
+                x    -- The x position of the landmark.
+                y    -- The y position of the landmark.
+                name -- The name of the landmark.
         """
         
         self.uid = uid
@@ -140,9 +144,25 @@ def convert(tree, interests=list()):
             for nd1 in way1.iter("nd"):
                 for nd2 in way2.iter("nd"):
                     if nd1.attrib['ref'] == nd2.attrib['ref']:
-                        nodes += [nd1.attrib['ref']]
+                        # First, look up the node's data from the 'ref' provided.
+                        node = None
+                        for n in allNodes:
+                            if n.attrib['id'] == nd1.attrib['ref']:
+                                node = n
+                                break
 
-    print("\n".join(nodes))
+                        # Now, create the node.
+                        newNode = Node(node.attrib['id'], node.attrib['lat'], node.attrib['lon'], 0)
+                        nodes += [newNode]
+
+    # Compute the degree of each node.
+    for node in nodes:
+        for way in highways:
+            for nd in way.iter("nd"):
+                if nd.attrib['ref'] == node.uid:
+                    node.degree += 1
+      
+    print("\n".join(map(str, nodes)))
 
     # Find the list of all amenities of interest and create landmarks out of them.
     for node in allNodes:
@@ -156,10 +176,11 @@ def convert(tree, interests=list()):
                 interest = True
 
         if interest:
-            landmarks += [name]
+            newLandmark = Landmark(node.attrib['id'], node.attrib['lon'], node.attrib['lat'], name)
+            landmarks += [newLandmark]
 
     print("------")
-    print("\n".join(landmarks))
+    print("\n".join(map(str, landmarks)))
 
     return nodes, edges, landmarks
 
