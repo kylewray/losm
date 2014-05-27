@@ -23,8 +23,10 @@
 
 
 #include "../include/losm_edge.h"
+#include "../include/losm_utilities.h"
 #include "../include/losm_exception.h"
 
+#include <iostream>
 #include <fstream>
 
 /**
@@ -121,6 +123,128 @@ void LOSMEdge::load(std::string filename, const std::vector<const LOSMNode *> no
 		std::vector<const LOSMEdge *> &edgesResult,
 		std::unordered_map<const LOSMNode *, std::vector<const LOSMNode *> > &neighborsResult)
 {
-	throw LOSMException();
+	edgesResult.clear();
+
+	// Attempt to open the file.
+	std::ifstream file(filename);
+	if (!file.is_open()) {
+		std::cerr << "Error[LOSMEdge::load]: Failed to open the file '" << filename << "'." << std::endl;
+		throw LOSMException();
+	}
+
+	std::string line;
+	int row = 1;
+	bool error = false;
+
+	// Iterate over all lines of the file separately.
+	while (std::getline(file, line)) {
+		std::vector<std::string> items = split_string_by_comma(line);
+
+		// Ensure that the proper number of items exist.
+		if (items.size() != 6) {
+			std::cerr << "Error[LOSMEdge::load]: Incorrect number of comma-delimited items on line " <<
+					row << "in file '" << filename << "'." << std::endl;
+			error = true;
+			break;
+		}
+
+		// Attempt to parse the first node's unique identifier.
+		unsigned int edgeUID1 = 0;
+		try {
+			edgeUID1 = std::stoi(items[0]);
+        } catch (const std::invalid_argument &err) {
+			std::cerr << "Error[LOSMEdge::load]: Failed to convert " << items[0] << " to an integer on line " <<
+					row << "in file '" << filename << "'." << std::endl;
+			error = true;
+			break;
+        }
+
+		// Find the node belonging to the first node's unique identifier.
+        const LOSMNode *edgeN1 = nullptr;
+        for (const LOSMNode *node : nodes) {
+        	if (node->get_uid() == edgeUID1) {
+        		edgeN1 = node;
+        		break;
+        	}
+        }
+
+		// Attempt to parse the second node's unique identifier.
+		unsigned int edgeUID2 = 0;
+		try {
+			edgeUID2 = std::stoi(items[1]);
+        } catch (const std::invalid_argument &err) {
+			std::cerr << "Error[LOSMEdge::load]: Failed to convert " << items[1] << " to an integer on line " <<
+					row << "in file '" << filename << "'." << std::endl;
+			error = true;
+			break;
+        }
+
+		// Find the node belonging to the second node's unique identifier.
+        const LOSMNode *edgeN2 = nullptr;
+        for (const LOSMNode *node : nodes) {
+        	if (node->get_uid() == edgeUID2) {
+        		edgeN2 = node;
+        		break;
+        	}
+        }
+
+        // The name is simply a string.
+        std::string edgeName = items[2];
+
+		// Attempt to parse the edge's distance.
+        float edgeDistance = 0.0f;
+		try {
+			edgeDistance = std::stod(items[3]);
+        } catch (const std::invalid_argument &err) {
+			std::cerr << "Error[LOSMEdge::load]: Failed to convert " << items[3] << " to a float on line " <<
+					row << "in file '" << filename << "'." << std::endl;
+			error = true;
+			break;
+        }
+
+		// Attempt to parse the edge's speed limit.
+		unsigned int edgeSpeedLimit = 0;
+		try {
+			edgeSpeedLimit = std::stoi(items[4]);
+        } catch (const std::invalid_argument &err) {
+			std::cerr << "Error[LOSMEdge::load]: Failed to convert " << items[4] << " to an integer on line " <<
+					row << "in file '" << filename << "'." << std::endl;
+			error = true;
+			break;
+        }
+
+		// Attempt to parse the edge's lanes.
+		unsigned int edgeLanes = 0;
+		try {
+			edgeLanes = std::stoi(items[5]);
+        } catch (const std::invalid_argument &err) {
+			std::cerr << "Error[LOSMEdge::load]: Failed to convert " << items[5] << " to an integer on line " <<
+					row << "in file '" << filename << "'." << std::endl;
+			error = true;
+			break;
+        }
+
+        // Now, with the variables loaded, we may create the node and add it.
+        edgesResult.push_back(new LOSMEdge(edgeN1, edgeN2, edgeName, edgeDistance, edgeSpeedLimit, edgeLanes));
+
+        // Add both nodes to each other's neighbors list.
+        neighborsResult[edgeN1].push_back(edgeN2);
+        neighborsResult[edgeN2].push_back(edgeN1);
+
+		row++;
+	}
+
+	// Clear all the memory of the nodes created half way through the loading process before the error arose.
+	// Then, throw the exception.
+	if (error) {
+		for (const LOSMEdge *edge : edgesResult) {
+			delete edge;
+		}
+		edgesResult.clear();
+		neighborsResult.clear();
+		throw LOSMException();
+	}
+
+	file.close();
 }
 
