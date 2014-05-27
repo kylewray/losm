@@ -23,194 +23,194 @@
 from __future__ import print_function
 
 import sys
+import math
 
 from lxml import etree
 
-
-class Node:
-    """ A node object, which simply stores an (x, y) location and a unique identifier. It
-        also holds the degree of the node.
-    """
-
-    def __init__(self, uid, x, y, degree):
-        """ The constructor for the node object.
-
-            Parameters:
-                uid    -- The unique id of the node.
-                x      -- The x position of the node.
-                y      -- The y position of the node.
-                degree -- The degree of this node in the graph.
-        """
-
-        self.uid = uid
-        self.x = x
-        self.y = y
-        self.degree = degree
+from losm_objects import Node, Edge, Landmark
 
 
-    def __str__(self):
-        """ Represent the node as a string. """
+class LOSMConverter:
+    """ A class which converts a OSM object to a set of three Light-OSM files. """
 
-        return "Node %s is located at (%s, %s) with degree %s" % (self.uid, self.x, self.y, self.degree)
+    def __init__(self):
+        """ The constructor for the LOSMConverter class. """
+
+        self.nodes = list()
+        self.edges = list()
+        self.landmarks = list()
 
 
-class Edge:
-    """ An edge object, which stores two node ids, as well as the distance between them, and the
-        road's speed limit.
-    """
-
-    def __init__(self, uid1, uid2, distance, speedLimit):
-        """ The constructor of the landmark object.
+    def execute(self, inputFile, outputFilePrefix, interests):
+        """ Execute the entire process with the parameters specified.
 
             Parameters:
-                uid1       -- The first node's unique identifier.
-                uid2       -- The second node's unique identifier.
-                distance   -- The distance from the first node to the second node.
-                speedLimit -- The speed limit for this road.
+                inputFile        -- The input OSM file.
+                outputFilePrefix -- The desired output files' prefix.
+                interests        -- The list of interests (landmark types).
         """
 
-        self.uid1 = uid1
-        self.uid2 = uid2
-        self.distance = distance
-        self.speedLimit = speedLimit
+        try:
+            with open(inputFile, 'r') as f:
+                self.convert(etree.parse(f), interests)
+                self.save(outputFilePrefix)
+        except IOError:
+            print("Failed to open file '%s'." % (inputFile))
 
 
-    def __str__(self):
-        """ Represent the edge as a string. """
-
-        return "Node %s is linked to Node %s with distance %s" % (self.uid1, self.uid2, self.distance)
-
-
-class Landmark:
-    """ A landmark object, which stores the (x, y) location and unique identifier of a landmark,
-        as well as its name.
-    """
-
-    def __init__(self, uid, x, y, name):
-        """ The constructor for the landmark object.
+    def haversine(self, lat1, lon1, lat2, lon2, miles=True):
+        """ Compute the Haversine distance (in miles, or km) given two lat/lon coordinates.
 
             Parameters:
-                uid  -- The unique id of the landmark.
-                x    -- The x position of the landmark.
-                y    -- The y position of the landmark.
-                name -- The name of the landmark.
+                lat1  -- The first latitude.
+                lon1  -- The first longitude.
+                lat2  -- The second latitude.
+                lon2  -- The second longitude.
+                miles -- Do the computation in terms of miles, or kilometers.
         """
-        
-        self.uid = uid
-        self.x = x
-        self.y = y
-        self.name = name
+
+        dlat = lat2 - lat1
+        dlon = lon2 - lon1
+
+        alpha = pow(math.sin(dlat / 2.0), 2) \
+            + math.cos(lat1) * math.cos(lat2) * pow(math.sin(dlon / 2.0), 2)
+        beta = 2.0 * math.atan2(math.sqrt(alpha), math.sqrt(1.0 - alpha))
+
+        radiusOfEarth = 3961.0
+    #     radiusOfEarth = 6373.0
+
+        return radiusOfEarth * beta
 
 
-    def __str__(self):
-        """ Represent the landmark as a string. """
+    def convert(self, tree, interests=list()):
+        """ Convert the XML tree provided into the individual nodes, edges, and landmarks.
 
-        return "Landmark %s is located at (%s, %s) with name %s" % (self.uid, self.x, self.y, self.name)
+            Parameters:
+                tree      -- The XML tree of the OSM file.
+                interests -- Optionally, specify the list of interests (amenity values) to keep
+                    as landmarks.
 
+            Returns:
+                nodes     -- The list of Node objects.
+                edges     -- The list of Edge objects.
+                landmarks -- The list of Landmark objects.
+        """
 
-def convert(tree, interests=list()):
-    """ Convert the XML tree provided into the individual nodes, edges, and landmarks.
+        nodes = dict()
+        edges = list()
+        landmarks = list()
 
-        Parameters:
-            tree      -- The XML tree of the OSM file.
-            interests -- Optionally, specify the list of interests (amenity values) to keep
-                as landmarks.
+        allNodes = {node.attrib['id']: node for node in list(tree.iter("node"))}
+        allWays = list(tree.iter("way"))
 
-        Returns:
-            nodes     -- The list of Node objects.
-            edges     -- The list of Edge objects.
-            landmarks -- The list of Landmark objects.
-    """
+        # Find the list of all highways.
+        highways = list()
+        for way in allWays:
+            for tag in way.iter("tag"):
+                if tag.attrib['k'] == "highway":
+                    highways += [way]
+                    break
 
-    nodes = list()
-    edges = list()
-    landmarks = list()
-
-    allNodes = list(tree.iter("node"))
-    allWays = list(tree.iter("way"))
-    
-    # Find the list of all highways.
-    highways = list()
-    for way in allWays:
-        for tag in way.iter("tag"):
-            if tag.attrib['k'] == "highway":
-                highways += way
-                break
-
-    # Look at every pair of ways and determine if nodes exist in more than one way. If they
-    # do, then these are intersections, which we define as nodes in our graph.
-    for i, way1 in enumerate(highways):
-        for way2 in highways[(i + 1):]:
-            for nd1 in way1.iter("nd"):
-                for nd2 in way2.iter("nd"):
-                    if nd1.attrib['ref'] == nd2.attrib['ref']:
-                        # First, look up the node's data from the 'ref' provided.
-                        node = None
-                        for n in allNodes:
-                            if n.attrib['id'] == nd1.attrib['ref']:
-                                node = n
-                                break
-
-                        # Now, create the node.
-                        newNode = Node(node.attrib['id'], node.attrib['lat'], node.attrib['lon'], 0)
-                        nodes += [newNode]
-
-    # Compute the degree of each node.
-    for node in nodes:
+        # Look at every pair of ways and determine if nodes exist in more than one way. If they
+        # do, then these are intersections, which we define as nodes in our graph.
         for way in highways:
-            for nd in way.iter("nd"):
-                if nd.attrib['ref'] == node.uid:
-                    node.degree += 1
-      
-    print("\n".join(map(str, nodes)))
+            # First, collect the important tag information from this way. These have default values.
+            name = "Unknown"
+            speedLimit = 25
+            lanes = 2
 
-    # Find the list of all amenities of interest and create landmarks out of them.
-    for node in allNodes:
-        interest = False
-        name = "Unknown"
+            for tag in way.iter("tag"):
+                if tag.attrib['k'] == "name":
+                    name = tag.attrib['v']
+                elif tag.attrib['k'] == "maxspeed":
+                    # Note: 'maxspeed' value is of the form '<speed> mph'.
+                    speedLimit = tag.attrib['v'].split(" ")[0]
+                elif tag.attrib['k'] == "lanes":
+                    lanes = tag.attrib['v']
 
-        for tag in node.iter("tag"):
-            if tag.attrib['k'] == "name":
-                name = tag.attrib['v']
-            if tag.attrib['k'] == "amenity" and tag.attrib['v'] in interests:
-                interest = True
+            nds = list(way.iter("nd"))
+            for i, nd in enumerate(nds):
+                uid = nd.attrib['ref']
+                node = allNodes[uid]
 
-        if interest:
-            newLandmark = Landmark(node.attrib['id'], node.attrib['lon'], node.attrib['lat'], name)
-            landmarks += [newLandmark]
+                try:
+                    nodes[uid].degree += 1
+                except KeyError:
+                    nodes[uid] = Node(uid, node.attrib['lat'], node.attrib['lon'], 2)
 
-    print("------")
-    print("\n".join(map(str, landmarks)))
+                if i > 0:
+                    uidPrev = nds[i - 1].attrib['ref']
+                    distance = self.haversine(float(nodes[uid].x), float(nodes[uid].y), \
+                                         float(nodes[uidPrev].x), float(nodes[uidPrev].y))
+                    edges += [Edge(nd.attrib['ref'], nds[i - 1].attrib['ref'], name, distance, speedLimit, lanes)]
 
-    return nodes, edges, landmarks
+        # Find the list of all amenities of interest and create landmarks out of them.
+        for node in allNodes.values():
+            interest = False
+            name = "Unknown"
+
+            for tag in node.iter("tag"):
+                if tag.attrib['k'] == "name":
+                    name = tag.attrib['v']
+                if tag.attrib['k'] == "amenity" and tag.attrib['v'] in interests:
+                    interest = True
+
+            if interest:
+                newLandmark = Landmark(node.attrib['id'], node.attrib['lon'], node.attrib['lat'], name)
+                landmarks += [newLandmark]
+
+        # Finally, store all this in the attributes of the class.
+        self.nodes = nodes.values()
+        self.edges = edges
+        self.landmarks = landmarks
 
 
-def save(filePrefix, nodes, edges, landmarks):
-    """ Save the nodes, edges, and landmarks as three separate files, given a file prefix.
+    def save(self, filePrefix):
+        """ Save the nodes, edges, and landmarks as three separate files, given a file prefix.
 
-        Parameters:
-            filePrefix -- The prefix to append to the three output files.
-            nodes      -- The list of Node objects.
-            edges      -- The list of Edge objects.
-            landmarks  -- The list of Landmark objects.
-    """
+            Parameters:
+                filePrefix -- The prefix to append to the three output files.
+        """
 
-    pass
+        with open(filePrefix + "nodes.dat", "w") as f:
+            for node in self.nodes:
+                f.write(node.data() + "\n")
+
+        with open(filePrefix + "edges.dat", "w") as f:
+            for edge in self.edges:
+                f.write(edge.data() + "\n")
+
+        with open(filePrefix + "landmarks.dat", "w") as f:
+            for landmark in self.landmarks:
+                f.write(landmark.data() + "\n")
 
 
-# Only try to run this code if the proper number of arguments were specified.
+    def __str__(self):
+        """ Convert the data to a string.
+
+            Returns:
+                The string of the nodes, edges, and landmarks.
+        """
+
+        result = "------ NODES ------\n"
+        result += "\n".join(map(str, self.nodes))
+        result += "\n------ EDGES ------\n"
+        result += "\n".join(map(str, self.edges))
+        result += "\n------ LANDMARKS ------\n"
+        result += "\n".join(map(str, self.landmarks))
+        result += "\n------------\n"
+
+        return result
+
+
+# If parameters were given to the Python script, then the user wants to run
+# this code with a particular input file.
 if __name__ == "__main__":
     if len(sys.argv) >= 3:
         inputFile = sys.argv[1]
         outputFilePrefix = sys.argv[2]
+        interests = sys.argv[3:]
 
-        try:
-            with open(inputFile, 'r') as f:
-                if len(sys.argv) > 3:
-                    nodes, edges, landmarks = convert(etree.parse(f), sys.argv[3:])
-                else:
-                    nodes, edges, landmarks = convert(etree.parse(f))
-
-                save(outputFilePrefix, nodes, edges, landmarks)
-        except IOError:
-            print("Failed to open file '%s'." % (inputFile))
+        osmConverter = LOSMConverter()
+        osmConverter.execute(inputFile, outputFilePrefix, interests)
+        print(osmConverter)
