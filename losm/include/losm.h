@@ -28,6 +28,7 @@
 
 #include <string>
 #include <vector>
+#include <unordered_map>
 
 #include "losm_node.h"
 #include "losm_edge.h"
@@ -85,10 +86,33 @@ public:
 	 */
 	const std::vector<const LOSMLandmark *> &get_landmarks() const;
 
+	/**
+	 * Get the neighbors of a node.
+	 * @param The node in question.
+	 * @param The list of neighbors of the node provided. This will be modified.
+	 */
+	void get_neighbors(const LOSMNode *node, std::vector<const LOSMNode *> &neighbors) const;
+
 private:
+	/**
+	 * The list of nodes.
+	 */
 	std::vector<const LOSMNode *> nodes;
+
+	/**
+	 * The list of edges.
+	 */
 	std::vector<const LOSMEdge *> edges;
+
+	/**
+	 * The list of landmarks.
+	 */
 	std::vector<const LOSMLandmark *> landmarks;
+
+	/**
+	 * A mapping of each node to a list of neighboring vertices.
+	 */
+	std::unordered_map<const LOSMNode *, std::vector<const LOSMNode *> > neighbors;
 
 };
 

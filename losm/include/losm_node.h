@@ -27,6 +27,8 @@
 
 
 #include <string>
+#include <vector>
+#include <unordered_map>
 
 /**
  * A class which stores a Light-OSM node.
@@ -68,9 +70,17 @@ public:
 
 	/**
 	 * Get the degree of the node.
-	 * @param The degree of the node.
+	 * @return The degree of the node.
 	 */
 	unsigned int get_degree() const;
+
+	/**
+	 * Load a list of LOSMNode objects from a comma-delimited file.
+	 * @param filename			The name of the file to load.
+	 * @param result			The resultant list of LOSMNodes. This will be modified.
+	 * @throws LOSMException	The file failed to load.
+	 */
+	static void load(std::string filename, std::vector<const LOSMNode *> &result);
 
 private:
 	/**

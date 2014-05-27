@@ -27,6 +27,8 @@
 
 
 #include <string>
+#include <vector>
+#include <unordered_map>
 
 #include "losm_node.h"
 
@@ -88,6 +90,19 @@ public:
 	 * @return The number of lanes in total on the edge.
 	 */
 	unsigned int get_lanes() const;
+
+	/**
+	 * Load a list of LOSMEdge objects from a comma-delimited file.
+	 * @param filename			The name of the file to load.
+	 * @param nodes				The list of LOSMNode objects to use in order to
+	 * @param edgesResult		The resultant list of LOSMEdges. This will be modified.
+	 * @param neighborsResult	The mapping from each LOSMNode to the list of neighboring LOSMNodes.
+	 * 							This will be modified.
+	 * @throws LOSMException	The file failed to load, or a uid could not be found.
+	 */
+	static void load(std::string filename, const std::vector<const LOSMNode *> nodes,
+			std::vector<const LOSMEdge *> &edgesResult,
+			std::unordered_map<const LOSMNode *, std::vector<const LOSMNode *> > &neighborsResult);
 
 private:
 	/**
