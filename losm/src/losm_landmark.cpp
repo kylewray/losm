@@ -23,8 +23,10 @@
 
 
 #include "../include/losm_landmark.h"
+#include "../include/losm_utilities.h"
 #include "../include/losm_exception.h"
 
+#include <iostream>
 #include <fstream>
 
 /**
@@ -93,5 +95,82 @@ std::string LOSMLandmark::get_name() const
  */
 void LOSMLandmark::load(std::string filename, std::vector<const LOSMLandmark *> &result)
 {
-	throw LOSMException();
+	result.clear();
+
+	// Attempt to open the file.
+	std::ifstream file(filename);
+	if (!file.is_open()) {
+		std::cerr << "Error[LOSMLandmark::load]: Failed to open the file '" << filename << "'." << std::endl;
+		throw LOSMException();
+	}
+
+	std::string line;
+	int row = 1;
+	bool error = false;
+
+	// Iterate over all lines of the file separately.
+	while (std::getline(file, line)) {
+		std::vector<std::string> items = split_string_by_comma(line);
+
+		// Ensure that the proper number of items exist.
+		if (items.size() != 4) {
+			std::cerr << "Error[LOSMLandmark::load]: Incorrect number of comma-delimited items on line " <<
+					row << "in file '" << filename << "'." << std::endl;
+			error = true;
+			break;
+		}
+
+		// Attempt to parse the unique identifier.
+		unsigned int landmarkUID = 0;
+		try {
+			landmarkUID = std::stoi(items[0]);
+        } catch (const std::invalid_argument &err) {
+			std::cerr << "Error[LOSMLandmark::load]: Failed to convert " << items[0] << " to an integer on line " <<
+					row << "in file '" << filename << "'." << std::endl;
+			error = true;
+			break;
+        }
+
+		// Attempt to parse the x coordinate.
+        float landmarkX = 0.0f;
+		try {
+			landmarkX = std::stod(items[1]);
+        } catch (const std::invalid_argument &err) {
+			std::cerr << "Error[LOSMLandmark::load]: Failed to convert " << items[1] << " to a float on line " <<
+					row << "in file '" << filename << "'." << std::endl;
+			error = true;
+			break;
+        }
+
+		// Attempt to parse the y coordinate.
+        float landmarkY = 0.0f;
+		try {
+			landmarkY = std::stod(items[2]);
+        } catch (const std::invalid_argument &err) {
+			std::cerr << "Error[LOSMLandmark::load]: Failed to convert " << items[2] << " to a float on line " <<
+					row << "in file '" << filename << "'." << std::endl;
+			error = true;
+			break;
+        }
+
+		// Attempt to parse the landmark's name.
+        std::string landmarkName = items[3];
+
+        // Now, with the variables loaded, we may create the landmark and add it.
+        result.push_back(new LOSMLandmark(landmarkUID, landmarkX, landmarkY, landmarkName));
+
+		row++;
+	}
+
+	// Clear all the memory of the landmarks created half way through the loading process before the error arose.
+	// Then, throw the exception.
+	if (error) {
+		for (const LOSMLandmark *landmark : result) {
+			delete landmark;
+		}
+		result.clear();
+		throw LOSMException();
+	}
+
+	file.close();
 }
