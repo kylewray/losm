@@ -25,28 +25,14 @@
 #include "../include/losm.h"
 #include "../include/losm_exception.h"
 
-/**
- * The default constructor for the LOSM class.
- */
 LOSM::LOSM()
 { }
 
-/**
- * The constructor for the LOSM class which allows the user to load the files
- * specified containing nodes, edges, and landmarks.
- * @param nodesFilename		The nodes' filename.
- * @param edgesFilename		The edges' filename.
- * @param landmarksFilename	The landmarks' filename.
- * @throws LOSMException	One of the files did not exist, or was invalid.
- */
 LOSM::LOSM(std::string nodesFilename, std::string edgesFilename, std::string landmarksFilename)
 {
 	load(nodesFilename, edgesFilename, landmarksFilename);
 }
 
-/**
- * The default deconstructor for the LOSM class.
- */
 LOSM::~LOSM()
 {
 	for (const LOSMNode *node : nodes) {
@@ -65,13 +51,6 @@ LOSM::~LOSM()
 	landmarks.clear();
 }
 
-/**
- * Load the files specified which contain nodes, edges, and landmarks.
- * @param nodesFilename		The nodes' filename.
- * @param edgesFilename		The edges' filename.
- * @param landmarksFilename	The landmarks' filename.
- * @throws LOSMException	One of the files did not exist, or was invalid.
- */
 void LOSM::load(std::string nodesFilename, std::string edgesFilename, std::string landmarksFilename)
 {
 	LOSMNode::load(nodesFilename, nodes);
@@ -81,36 +60,18 @@ void LOSM::load(std::string nodesFilename, std::string edgesFilename, std::strin
 	LOSMLandmark::load(landmarksFilename, landmarks);
 }
 
-/**
- * Get the list of LOSMNodes.
- * @return The list of LOSMNodes.
- */
 const std::vector<const LOSMNode *> &LOSM::get_nodes() const {
 	return nodes;
 }
 
-/**
- * Get the list of LOSMEdges.
- * @return The list of LOSMEdges.
- */
 const std::vector<const LOSMEdge *> &LOSM::get_edges() const {
 	return edges;
 }
 
-/**
- * Get the list of LOSMLandmarks.
- * @return The list of LOSMLandmarks.
- */
 const std::vector<const LOSMLandmark *> &LOSM::get_landmarks() const {
 	return landmarks;
 }
 
-/**
- * Get the neighbors of a node.
- * @param node			The node in question.
- * @param result		The list of neighbors of the node provided. This will be modified.
- * @throw LOSMException	The node was not valid.
- */
 void LOSM::get_neighbors(const LOSMNode *node, std::vector<const LOSMNode *> &result) const {
 	std::unordered_map<const LOSMNode *, std::vector<const LOSMNode *> >::const_iterator alpha = neighbors.find(node);
 	if (alpha == neighbors.end()) {

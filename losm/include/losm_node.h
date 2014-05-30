@@ -38,10 +38,10 @@ public:
 	/**
 	 * The default constructor for the LOSMNode class, which requires the specification of
 	 * each element in the node.
-	 * @param uid		The unique identifier for the node.
-	 * @param x 		The x coordinate (latitude).
-	 * @param y			The y coordinate (longitude).
-	 * @param degree	The degree of the node, meaning how many edges involve it.
+	 * @param	uid		The unique identifier for the node.
+	 * @param	x 		The x coordinate (latitude).
+	 * @param	y		The y coordinate (longitude).
+	 * @param	degree	The degree of the node, meaning how many edges involve it.
 	 */
 	LOSMNode(unsigned int uid, float x, float y, unsigned int degree);
 
@@ -52,33 +52,33 @@ public:
 
 	/**
 	 * Get the unique identifier for the node.
-	 * @return The unique identifier for the node.
+	 * @return	The unique identifier for the node.
 	 */
 	unsigned int get_uid() const;
 
 	/**
 	 * Get the x coordinate (latitude).
-	 * @return The x-coordinate (latitude).
+	 * @return	The x-coordinate (latitude).
 	 */
 	float get_x() const;
 
 	/**
 	 * Get the y coordinate (longitude).
-	 * @return The y-coordinate (longitude).
+	 * @return	The y-coordinate (longitude).
 	 */
 	float get_y() const;
 
 	/**
 	 * Get the degree of the node.
-	 * @return The degree of the node.
+	 * @return	The degree of the node.
 	 */
 	unsigned int get_degree() const;
 
 	/**
 	 * Load a list of LOSMNode objects from a comma-delimited file.
-	 * @param filename			The name of the file to load.
-	 * @param result			The resultant list of LOSMNodes. This will be modified.
-	 * @throws LOSMException	The file failed to load.
+	 * @param	filename		The name of the file to load.
+	 * @param	result			The resultant list of LOSMNodes. This will be modified.
+	 * @throw	LOSMException	The file failed to load.
 	 */
 	static void load(std::string filename, std::vector<const LOSMNode *> &result);
 

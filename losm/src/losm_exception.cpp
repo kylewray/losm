@@ -24,10 +24,6 @@
 
 #include "../include/losm_exception.h"
 
-/**
- * Return the specific error that occurred.
- * @return The specific error that occurred.
- */
 const char *LOSMException::what() const throw()
 {
 	return "Error[LOSMException]: An error has occurred.";

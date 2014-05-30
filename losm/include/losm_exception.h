@@ -35,7 +35,7 @@ class LOSMException : public std::exception {
 public:
 	/**
 	 * Return the specific error that occurred.
-	 * @return The specific error that occurred.
+	 * @return	The specific error that occurred.
 	 */
 	virtual const char *what() const throw();
 

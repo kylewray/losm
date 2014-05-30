@@ -29,14 +29,6 @@
 #include <iostream>
 #include <fstream>
 
-/**
- * The default constructor for the LOSMLandmark class, which requires the specification of
- * each element in the landmark.
- * @param uid	The unique identifier for the node.
- * @param x 	The x coordinate (latitude).
- * @param y		The y coordinate (longitude).
- * @param name	The name of the landmark.
- */
 LOSMLandmark::LOSMLandmark(unsigned int uid, float x, float y, std::string name)
 {
 	this->uid = uid;
@@ -45,54 +37,29 @@ LOSMLandmark::LOSMLandmark(unsigned int uid, float x, float y, std::string name)
 	this->name = name;
 }
 
-/**
- * The default deconstructor for the LOSMLandmark class.
- */
 LOSMLandmark::~LOSMLandmark()
 { }
 
-/**
- * Get the unique identifier for the landmark.
- * @return The unique identifier for the landmark.
- */
 unsigned int LOSMLandmark::get_uid() const
 {
 	return uid;
 }
 
-/**
- * Get the x coordinate (latitude).
- * @return The x-coordinate (latitude).
- */
 float LOSMLandmark::get_x() const
 {
 	return x;
 }
 
-/**
- * Get the y coordinate (longitude).
- * @return The y-coordinate (longitude).
- */
 float LOSMLandmark::get_y() const
 {
 	return y;
 }
 
-/**
- * Get the name of the node.
- * @return The name of the node.
- */
 std::string LOSMLandmark::get_name() const
 {
 	return name;
 }
 
-/**
- * Load a list of LOSMLandmark objects from a comma-delimited file.
- * @param filename			The name of the file to load.
- * @param result			The resultant list of LOSMLandmarks. This will be modified.
- * @throws LOSMException	The file failed to load.
- */
 void LOSMLandmark::load(std::string filename, std::vector<const LOSMLandmark *> &result)
 {
 	result.clear();

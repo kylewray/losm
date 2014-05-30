@@ -40,12 +40,12 @@ public:
 	/**
 	 * The default constructor for the LOSMEdge class, which requires the specification of
 	 * each element in the edge.
-	 * @param n1			The edge's first node.
-	 * @param n2			The edge's second node.
-	 * @param name			The name of the edge, meaning the stree name.
-	 * @param distance		The distance of this edge (in miles).
-	 * @param speedLimit	The speed limit of this edge.
-	 * @param lanes			The total number of lanes (all directions).
+	 * @param	n1			The edge's first node.
+	 * @param	n2			The edge's second node.
+	 * @param	name		The name of the edge, meaning the stree name.
+	 * @param	distance	The distance of this edge (in miles).
+	 * @param	speedLimit	The speed limit of this edge.
+	 * @param	lanes		The total number of lanes (all directions).
 	 */
 	LOSMEdge(const LOSMNode *n1, const LOSMNode *n2, std::string name, float distance,
 			unsigned int speedLimit, unsigned int lanes);
@@ -57,48 +57,48 @@ public:
 
 	/**
 	 * Get the first node.
-	 * @return The first node.
+	 * @return	The first node.
 	 */
 	const LOSMNode *get_node_1() const;
 
 	/**
 	 * Get the second node.
-	 * @return The second node.
+	 * @return	The second node.
 	 */
 	const LOSMNode *get_node_2() const;
 
 	/**
 	 * Get the name of the edge.
-	 * @return The name of the edge.
+	 * @return	The name of the edge.
 	 */
 	std::string get_name() const;
 
 	/**
 	 * Get the distance (in miles) of the edge.
-	 * @return The distance (in miles) of the edge.
+	 * @return	The distance (in miles) of the edge.
 	 */
 	float get_distance() const;
 
 	/**
 	 * Get the speed limit of the edge.
-	 * @return The speed limit of the edge.
+	 * @return	The speed limit of the edge.
 	 */
 	unsigned int get_speed_limit() const;
 
 	/**
 	 * Get the number of lanes in total on the edge.
-	 * @return The number of lanes in total on the edge.
+	 * @return	The number of lanes in total on the edge.
 	 */
 	unsigned int get_lanes() const;
 
 	/**
 	 * Load a list of LOSMEdge objects from a comma-delimited file.
-	 * @param filename			The name of the file to load.
-	 * @param nodes				The list of LOSMNode objects to use in order to
-	 * @param edgesResult		The resultant list of LOSMEdges. This will be modified.
-	 * @param neighborsResult	The mapping from each LOSMNode to the list of neighboring LOSMNodes.
-	 * 							This will be modified.
-	 * @throws LOSMException	The file failed to load, or a uid could not be found.
+	 * @param	filename			The name of the file to load.
+	 * @param	nodes				The list of LOSMNode objects to use in order to
+	 * @param	edgesResult			The resultant list of LOSMEdges. This will be modified.
+	 * @param	neighborsResult		The mapping from each LOSMNode to the list of neighboring LOSMNodes.
+	 * 								This will be modified.
+	 * @throw	LOSMException		The file failed to load, or a uid could not be found.
 	 */
 	static void load(std::string filename, const std::vector<const LOSMNode *> nodes,
 			std::vector<const LOSMEdge *> &edgesResult,

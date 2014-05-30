@@ -47,10 +47,10 @@ public:
 	/**
 	 * The constructor for the LOSM class which allows the user to load the files
 	 * specified containing nodes, edges, and landmarks.
-	 * @param nodesFilename		The nodes' filename.
-	 * @param edgesFilename		The edges' filename.
-	 * @param landmarksFilename	The landmarks' filename.
-	 * @throws LOSMException	One of the files did not exist, or was invalid.
+	 * @param	nodesFilename		The nodes' filename.
+	 * @param	edgesFilename		The edges' filename.
+	 * @param	landmarksFilename	The landmarks' filename.
+	 * @throw	LOSMException		One of the files did not exist, or was invalid.
 	 */
 	LOSM(std::string nodesFilename, std::string edgesFilename, std::string landmarksFilename);
 
@@ -61,35 +61,35 @@ public:
 
 	/**
 	 * Load the files specified which contain nodes, edges, and landmarks.
-	 * @param nodesFilename		The nodes' filename.
-	 * @param edgesFilename		The edges' filename.
-	 * @param landmarksFilename	The landmarks' filename.
-	 * @throws LOSMException	One of the files did not exist, or was invalid.
+	 * @param	nodesFilename		The nodes' filename.
+	 * @param	edgesFilename		The edges' filename.
+	 * @param	landmarksFilename	The landmarks' filename.
+	 * @throw	LOSMException		One of the files did not exist, or was invalid.
 	 */
 	void load(std::string nodesFilename, std::string edgesFilename, std::string landmarksFilename);
 
 	/**
 	 * Get the list of LOSMNodes.
-	 * @return The list of LOSMNodes.
+	 * @return	The list of LOSMNodes.
 	 */
 	const std::vector<const LOSMNode *> &get_nodes() const;
 
 	/**
 	 * Get the list of LOSMEdges.
-	 * @return The list of LOSMEdges.
+	 * @return	The list of LOSMEdges.
 	 */
 	const std::vector<const LOSMEdge *> &get_edges() const;
 
 	/**
 	 * Get the list of LOSMLandmarks.
-	 * @return The list of LOSMLandmarks.
+	 * @return	The list of LOSMLandmarks.
 	 */
 	const std::vector<const LOSMLandmark *> &get_landmarks() const;
 
 	/**
 	 * Get the neighbors of a node.
-	 * @param The node in question.
-	 * @param The list of neighbors of the node provided. This will be modified.
+	 * @param	The node in question.
+	 * @param	The list of neighbors of the node provided. This will be modified.
 	 */
 	void get_neighbors(const LOSMNode *node, std::vector<const LOSMNode *> &neighbors) const;
 

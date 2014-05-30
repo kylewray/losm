@@ -24,10 +24,6 @@
 
 #include "../include/losm_utilities.h"
 
-/**
- * Trim the left and right sides of a string, removing the whitespace.
- * @param item The string to trim.
- */
 void trim_whitespace(std::string &item)
 {
 	// Trim from the left side.
@@ -49,12 +45,6 @@ void trim_whitespace(std::string &item)
 	item = item.substr(left, right - left);
 }
 
-/**
- * Split a string delimited by commas ',' into a vector of strings. This
- * trims whitespace around each element.
- * @param item The string to split which is delimited by commas ','.
- * @return The resulting vector of items.
- */
 std::vector<std::string> split_string_by_comma(std::string item)
 {
 	// Split the key and value of the line, and trim the white spaces.
