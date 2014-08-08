@@ -25,6 +25,9 @@
 #include "../include/losm.h"
 #include "../include/losm_exception.h"
 
+#include <unordered_map>
+#include <algorithm>
+
 LOSM::LOSM()
 { }
 

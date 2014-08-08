@@ -47,7 +47,8 @@ class Node:
     def __str__(self):
         """ Represent the node as a string. """
 
-        return "Node %s is located at (%s, %s) with degree %s" % (self.uid, self.x, self.y, self.degree)
+        return "Node %s is located at (%s, %s) with degree %s" % \
+            (self.uid, self.x, self.y, self.degree)
 
 
     def data(self):
@@ -88,8 +89,8 @@ class Edge:
     def __str__(self):
         """ Represent the edge as a string. """
 
-        return "Edge between Node %s and Node %s with distance %s and %s lanes" % (self.uid1, self.uid2,
-                                                                                   self.distance, self.lanes)
+        return "Edge between Node %s and Node %s has name %s with distance %s and %s lanes" % \
+                (self.uid1, self.uid2, self.name, self.distance, self.lanes)
 
 
     def data(self):
@@ -99,7 +100,8 @@ class Edge:
                 The string with each element delimited by a comma.
         """
 
-        return ",".join(map(str, [self.uid1, self.uid2, self.distance, self.speedLimit, self.lanes]))
+        return ",".join(map(str, [self.uid1, self.uid2, self.name, self.distance, \
+                self.speedLimit, self.lanes]))
 
 
 class Landmark:
@@ -126,7 +128,8 @@ class Landmark:
     def __str__(self):
         """ Represent the landmark as a string. """
 
-        return "Landmark %s is located at (%s, %s) with name %s" % (self.uid, self.x, self.y, self.name)
+        return "Landmark %s is located at (%s, %s) with name %s" % \
+                (self.uid, self.x, self.y, self.name)
 
 
     def data(self):
@@ -137,3 +140,4 @@ class Landmark:
         """
 
         return ",".join(map(str, [self.uid, self.x, self.y, self.name]))
+

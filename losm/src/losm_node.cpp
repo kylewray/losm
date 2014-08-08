@@ -82,7 +82,7 @@ void LOSMNode::load(std::string filename, std::vector<const LOSMNode *> &result)
 		// Ensure that the proper number of items exist.
 		if (items.size() != 4) {
 			std::cerr << "Error[LOSMNode::load]: Incorrect number of comma-delimited items on line " <<
-					row << "in file '" << filename << "'." << std::endl;
+					row << " in file '" << filename << "'." << std::endl;
 			error = true;
 			break;
 		}
@@ -90,10 +90,10 @@ void LOSMNode::load(std::string filename, std::vector<const LOSMNode *> &result)
 		// Attempt to parse the unique identifier.
 		unsigned int nodeUID = 0;
 		try {
-			nodeUID = std::stoi(items[0]);
-        } catch (const std::invalid_argument &err) {
+			nodeUID = std::stol(items[0]);
+        } catch (const std::exception &err) {
 			std::cerr << "Error[LOSMNode::load]: Failed to convert " << items[0] << " to an integer on line " <<
-					row << "in file '" << filename << "'." << std::endl;
+					row << " in file '" << filename << "'." << std::endl;
 			error = true;
 			break;
         }
@@ -102,9 +102,9 @@ void LOSMNode::load(std::string filename, std::vector<const LOSMNode *> &result)
         float nodeX = 0.0f;
 		try {
 			nodeX = std::stod(items[1]);
-        } catch (const std::invalid_argument &err) {
+        } catch (const std::exception &err) {
 			std::cerr << "Error[LOSMNode::load]: Failed to convert " << items[1] << " to a float on line " <<
-					row << "in file '" << filename << "'." << std::endl;
+					row << " in file '" << filename << "'." << std::endl;
 			error = true;
 			break;
         }
@@ -113,9 +113,9 @@ void LOSMNode::load(std::string filename, std::vector<const LOSMNode *> &result)
         float nodeY = 0.0f;
 		try {
 			nodeY = std::stod(items[2]);
-        } catch (const std::invalid_argument &err) {
+        } catch (const std::exception &err) {
 			std::cerr << "Error[LOSMNode::load]: Failed to convert " << items[2] << " to a float on line " <<
-					row << "in file '" << filename << "'." << std::endl;
+					row << " in file '" << filename << "'." << std::endl;
 			error = true;
 			break;
         }
@@ -123,10 +123,10 @@ void LOSMNode::load(std::string filename, std::vector<const LOSMNode *> &result)
 		// Attempt to parse the node's degree.
         unsigned int nodeDegree = 0;
 		try {
-			nodeDegree = std::stoi(items[3]);
-        } catch (const std::invalid_argument &err) {
+			nodeDegree = std::stol(items[3]);
+        } catch (const std::exception &err) {
 			std::cerr << "Error[LOSMNode::load]: Failed to convert " << items[3] << " to an integer on line " <<
-					row << "in file '" << filename << "'." << std::endl;
+					row << " in file '" << filename << "'." << std::endl;
 			error = true;
 			break;
         }

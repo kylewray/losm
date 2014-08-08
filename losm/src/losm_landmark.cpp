@@ -82,7 +82,7 @@ void LOSMLandmark::load(std::string filename, std::vector<const LOSMLandmark *> 
 		// Ensure that the proper number of items exist.
 		if (items.size() != 4) {
 			std::cerr << "Error[LOSMLandmark::load]: Incorrect number of comma-delimited items on line " <<
-					row << "in file '" << filename << "'." << std::endl;
+					row << " in file '" << filename << "'." << std::endl;
 			error = true;
 			break;
 		}
@@ -90,10 +90,10 @@ void LOSMLandmark::load(std::string filename, std::vector<const LOSMLandmark *> 
 		// Attempt to parse the unique identifier.
 		unsigned int landmarkUID = 0;
 		try {
-			landmarkUID = std::stoi(items[0]);
-        } catch (const std::invalid_argument &err) {
+			landmarkUID = std::stol(items[0]);
+        } catch (const std::exception &err) {
 			std::cerr << "Error[LOSMLandmark::load]: Failed to convert " << items[0] << " to an integer on line " <<
-					row << "in file '" << filename << "'." << std::endl;
+					row << " in file '" << filename << "'." << std::endl;
 			error = true;
 			break;
         }
@@ -102,9 +102,9 @@ void LOSMLandmark::load(std::string filename, std::vector<const LOSMLandmark *> 
         float landmarkX = 0.0f;
 		try {
 			landmarkX = std::stod(items[1]);
-        } catch (const std::invalid_argument &err) {
+        } catch (const std::exception &err) {
 			std::cerr << "Error[LOSMLandmark::load]: Failed to convert " << items[1] << " to a float on line " <<
-					row << "in file '" << filename << "'." << std::endl;
+					row << " in file '" << filename << "'." << std::endl;
 			error = true;
 			break;
         }
@@ -113,9 +113,9 @@ void LOSMLandmark::load(std::string filename, std::vector<const LOSMLandmark *> 
         float landmarkY = 0.0f;
 		try {
 			landmarkY = std::stod(items[2]);
-        } catch (const std::invalid_argument &err) {
+        } catch (const std::exception &err) {
 			std::cerr << "Error[LOSMLandmark::load]: Failed to convert " << items[2] << " to a float on line " <<
-					row << "in file '" << filename << "'." << std::endl;
+					row << " in file '" << filename << "'." << std::endl;
 			error = true;
 			break;
         }

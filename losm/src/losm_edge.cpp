@@ -97,7 +97,7 @@ void LOSMEdge::load(std::string filename, const std::vector<const LOSMNode *> no
 		// Ensure that the proper number of items exist.
 		if (items.size() != 6) {
 			std::cerr << "Error[LOSMEdge::load]: Incorrect number of comma-delimited items on line " <<
-					row << "in file '" << filename << "'." << std::endl;
+					row << " in file '" << filename << "'." << std::endl;
 			error = true;
 			break;
 		}
@@ -105,10 +105,10 @@ void LOSMEdge::load(std::string filename, const std::vector<const LOSMNode *> no
 		// Attempt to parse the first node's unique identifier.
 		unsigned int edgeUID1 = 0;
 		try {
-			edgeUID1 = std::stoi(items[0]);
-        } catch (const std::invalid_argument &err) {
+			edgeUID1 = std::stol(items[0]);
+        } catch (const std::exception &err) {
 			std::cerr << "Error[LOSMEdge::load]: Failed to convert " << items[0] << " to an integer on line " <<
-					row << "in file '" << filename << "'." << std::endl;
+					row << " in file '" << filename << "'." << std::endl;
 			error = true;
 			break;
         }
@@ -125,10 +125,10 @@ void LOSMEdge::load(std::string filename, const std::vector<const LOSMNode *> no
 		// Attempt to parse the second node's unique identifier.
 		unsigned int edgeUID2 = 0;
 		try {
-			edgeUID2 = std::stoi(items[1]);
-        } catch (const std::invalid_argument &err) {
+			edgeUID2 = std::stol(items[1]);
+        } catch (const std::exception &err) {
 			std::cerr << "Error[LOSMEdge::load]: Failed to convert " << items[1] << " to an integer on line " <<
-					row << "in file '" << filename << "'." << std::endl;
+					row << " in file '" << filename << "'." << std::endl;
 			error = true;
 			break;
         }
@@ -149,9 +149,9 @@ void LOSMEdge::load(std::string filename, const std::vector<const LOSMNode *> no
         float edgeDistance = 0.0f;
 		try {
 			edgeDistance = std::stod(items[3]);
-        } catch (const std::invalid_argument &err) {
+        } catch (const std::exception &err) {
 			std::cerr << "Error[LOSMEdge::load]: Failed to convert " << items[3] << " to a float on line " <<
-					row << "in file '" << filename << "'." << std::endl;
+					row << " in file '" << filename << "'." << std::endl;
 			error = true;
 			break;
         }
@@ -159,10 +159,10 @@ void LOSMEdge::load(std::string filename, const std::vector<const LOSMNode *> no
 		// Attempt to parse the edge's speed limit.
 		unsigned int edgeSpeedLimit = 0;
 		try {
-			edgeSpeedLimit = std::stoi(items[4]);
-        } catch (const std::invalid_argument &err) {
+			edgeSpeedLimit = std::stol(items[4]);
+        } catch (const std::exception &err) {
 			std::cerr << "Error[LOSMEdge::load]: Failed to convert " << items[4] << " to an integer on line " <<
-					row << "in file '" << filename << "'." << std::endl;
+					row << " in file '" << filename << "'." << std::endl;
 			error = true;
 			break;
         }
@@ -170,10 +170,10 @@ void LOSMEdge::load(std::string filename, const std::vector<const LOSMNode *> no
 		// Attempt to parse the edge's lanes.
 		unsigned int edgeLanes = 0;
 		try {
-			edgeLanes = std::stoi(items[5]);
-        } catch (const std::invalid_argument &err) {
+			edgeLanes = std::stol(items[5]);
+        } catch (const std::exception &err) {
 			std::cerr << "Error[LOSMEdge::load]: Failed to convert " << items[5] << " to an integer on line " <<
-					row << "in file '" << filename << "'." << std::endl;
+					row << " in file '" << filename << "'." << std::endl;
 			error = true;
 			break;
         }

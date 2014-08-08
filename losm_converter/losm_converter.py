@@ -114,7 +114,8 @@ class LOSMConverter:
         # Look at every pair of ways and determine if nodes exist in more than one way. If they
         # do, then these are intersections, which we define as nodes in our graph.
         for way in highways:
-            # First, collect the important tag information from this way. These have default values.
+            # First, collect the important tag information from this way. These
+            # have default values.
             name = "Unknown"
             speedLimit = 25
             lanes = 2
@@ -141,8 +142,9 @@ class LOSMConverter:
                 if i > 0:
                     uidPrev = nds[i - 1].attrib['ref']
                     distance = self.haversine(float(nodes[uid].x), float(nodes[uid].y), \
-                                         float(nodes[uidPrev].x), float(nodes[uidPrev].y))
-                    edges += [Edge(nd.attrib['ref'], nds[i - 1].attrib['ref'], name, distance, speedLimit, lanes)]
+                                        float(nodes[uidPrev].x), float(nodes[uidPrev].y))
+                    edges += [Edge(nd.attrib['ref'], nds[i - 1].attrib['ref'], name, \
+                                        distance, speedLimit, lanes)]
 
         # Find the list of all amenities of interest and create landmarks out of them.
         for node in allNodes.values():
@@ -156,7 +158,8 @@ class LOSMConverter:
                     interest = True
 
             if interest:
-                newLandmark = Landmark(node.attrib['id'], node.attrib['lon'], node.attrib['lat'], name)
+                newLandmark = Landmark(node.attrib['id'], node.attrib['lon'], \
+                                node.attrib['lat'], name)
                 landmarks += [newLandmark]
 
         # Finally, store all this in the attributes of the class.
@@ -214,3 +217,8 @@ if __name__ == "__main__":
         osmConverter = LOSMConverter()
         osmConverter.execute(inputFile, outputFilePrefix, interests)
         print(osmConverter)
+    else:
+        print("python losm_converter.py " + \
+            "<input file> <output prefix for files> " + \
+            "<optional list of landmarks>")
+
