@@ -122,6 +122,12 @@ void LOSMEdge::load(std::string filename, const std::vector<const LOSMNode *> no
         	}
         }
 
+        if (edgeN1 == nullptr) {
+        	std::cerr << "Error[LOSMEdge::load]: Failed to find node with UID '" << edgeUID1 << "' in file '" << filename << "'." << std::endl;
+        	error = true;
+        	break;
+        }
+
 		// Attempt to parse the second node's unique identifier.
 		unsigned int edgeUID2 = 0;
 		try {
@@ -140,6 +146,12 @@ void LOSMEdge::load(std::string filename, const std::vector<const LOSMNode *> no
         		edgeN2 = node;
         		break;
         	}
+        }
+
+        if (edgeN2 == nullptr) {
+        	std::cerr << "Error[LOSMEdge::load]: Failed to find node with UID '" << edgeUID2 << "' in file '" << filename << "'." << std::endl;
+        	error = true;
+        	break;
         }
 
         // The name is simply a string.
