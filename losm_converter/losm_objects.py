@@ -38,16 +38,16 @@ class Node:
                 degree -- The degree of this node in the graph.
         """
 
-        self.uid = uid
-        self.x = x
-        self.y = y
-        self.degree = degree
+        self.uid = int(uid)
+        self.x = float(x)
+        self.y = float(y)
+        self.degree = int(degree)
 
 
     def __str__(self):
         """ Represent the node as a string. """
 
-        return "Node %s is located at (%s, %s) with degree %s" % \
+        return "Node %i is located at (%f, %f) with degree %i" % \
             (self.uid, self.x, self.y, self.degree)
 
 
@@ -78,18 +78,18 @@ class Edge:
                 lanes      -- The number of lanes on this road.
         """
 
-        self.uid1 = uid1
-        self.uid2 = uid2
+        self.uid1 = int(uid1)
+        self.uid2 = int(uid2)
         self.name = name
-        self.distance = distance
-        self.speedLimit = speedLimit
-        self.lanes = lanes
+        self.distance = float(distance)
+        self.speedLimit = int(speedLimit)
+        self.lanes = int(lanes)
 
 
     def __str__(self):
         """ Represent the edge as a string. """
 
-        return "Edge between Node %s and Node %s has name %s with distance %s and %s lanes" % \
+        return "Edge between Node %i and Node %i has name %s with distance %f and %i lanes" % \
                 (self.uid1, self.uid2, self.name, self.distance, self.lanes)
 
 
@@ -119,16 +119,16 @@ class Landmark:
                 name -- The name of the landmark.
         """
 
-        self.uid = uid
-        self.x = x
-        self.y = y
+        self.uid = int(uid)
+        self.x = float(x)
+        self.y = float(y)
         self.name = name
 
 
     def __str__(self):
         """ Represent the landmark as a string. """
 
-        return "Landmark %s is located at (%s, %s) with name %s" % \
+        return "Landmark %i is located at (%f, %f) with name %s" % \
                 (self.uid, self.x, self.y, self.name)
 
 
