@@ -24,6 +24,7 @@ from __future__ import print_function
 
 import sys
 import math
+import csv
 
 from lxml import etree
 
@@ -33,12 +34,20 @@ from losm_objects import Node, Edge, Landmark
 class LOSMConverter:
     """ A class which converts a OSM object to a set of three Light-OSM files. """
 
-    def __init__(self):
-        """ The constructor for the LOSMConverter class. """
+    def __init__(self, filePrefix=None):
+        """ The constructor for the LOSMConverter class. Optionally, load the
+            LOSM files with the corresponding file prefix provided.
+            
+            Parameters:
+                filePrefix -- The prefix for the three LOSM files.
+        """
 
         self.nodes = list()
         self.edges = list()
         self.landmarks = list()
+
+        if filePrefix != None:
+            self.load(filePrefix)
 
 
     def execute(self, inputFile, outputFilePrefix, interests):
@@ -186,6 +195,48 @@ class LOSMConverter:
         with open(filePrefix + "landmarks.dat", "w") as f:
             for landmark in self.landmarks:
                 f.write(landmark.data() + "\n")
+
+
+    def load(self, filePrefix):
+        """ Load the nodes, edges, and landmarks from three separate files, given a file prefix.
+
+            Parameters:
+                filePrefix -- The prefix to append to the three input files.
+        """
+
+        self.nodes = list()
+        self.edges = list()
+        self.landmarks = list()
+
+        with open(filePrefix + "nodes.dat", "r") as f:
+            reader = csv.reader(f, delimiter=',')
+            for row in reader:
+                if len(row) != 4:
+                    print("Failed to parse 4 arguments for node line: '" + ",".join(row) + "'.")
+                    break
+
+                node = Node(row[0], row[1], row[2], row[3])
+                self.nodes.append(node)
+
+        with open(filePrefix + "edges.dat", "r") as f:
+            reader = csv.reader(f, delimiter=',')
+            for row in reader:
+                if len(row) != 6:
+                    print("Failed to parse 6 arguments for edge line: '" + ",".join(row) + "'.")
+                    break
+
+                edge = Edge(row[0], row[1], row[2], row[3], row[4], row[5])
+                self.edges.append(edge)
+
+        with open(filePrefix + "landmarks.dat", "r") as f:
+            reader = csv.reader(f, delimiter=',')
+            for row in reader:
+                if len(row) != 4:
+                    print("Failed to parse 4 arguments for landmark line: '" + ",".join(row) + "'.")
+                    break
+
+                landmark = Landmark(row[0], row[1], row[2], row[3])
+                self.landmarks.append(landmark)
 
 
     def __str__(self):
