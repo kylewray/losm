@@ -167,8 +167,8 @@ class LOSMConverter:
                     interest = True
 
             if interest:
-                newLandmark = Landmark(node.attrib['id'], node.attrib['lon'], \
-                                node.attrib['lat'], name)
+                newLandmark = Landmark(node.attrib['id'], node.attrib['lat'], \
+                                node.attrib['lon'], name)
                 landmarks += [newLandmark]
 
         # Finally, store all this in the attributes of the class.
