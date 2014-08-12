@@ -144,15 +144,16 @@ class LOSMConverter:
                 node = allNodes[uid]
 
                 try:
-                    nodes[uid].degree += 1
+                    nodes[uid]
                 except KeyError:
-                    nodes[uid] = Node(uid, node.attrib['lat'], node.attrib['lon'], 2)
+                    nodes[uid] = Node(uid, node.attrib['lat'], node.attrib['lon'], 0)
 
                 if i > 0:
                     uidPrev = nds[i - 1].attrib['ref']
-                    distance = self.haversine(float(nodes[uid].x), float(nodes[uid].y), \
+
+                    distance = self.haversine(float(nodes[uid].x), float(nodes[uid].y),
                                         float(nodes[uidPrev].x), float(nodes[uidPrev].y))
-                    edges += [Edge(nd.attrib['ref'], nds[i - 1].attrib['ref'], name, \
+                    edges += [Edge(uid, nds[i - 1].attrib['ref'], name,
                                         distance, speedLimit, lanes)]
 
         # Find the list of all amenities of interest and create landmarks out of them.
@@ -167,9 +168,14 @@ class LOSMConverter:
                     interest = True
 
             if interest:
-                newLandmark = Landmark(node.attrib['id'], node.attrib['lat'], \
+                newLandmark = Landmark(node.attrib['id'], node.attrib['lat'],
                                 node.attrib['lon'], name)
                 landmarks += [newLandmark]
+
+        # Compute the degree of all the nodes.
+        for edge in edges:
+            nodes[str(edge.uid1)].degree += 1
+            nodes[str(edge.uid2)].degree += 1
 
         # Finally, store all this in the attributes of the class.
         self.nodes = nodes.values()

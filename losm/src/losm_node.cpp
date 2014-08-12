@@ -29,7 +29,7 @@
 #include <iostream>
 #include <fstream>
 
-LOSMNode::LOSMNode(unsigned int uid, float x, float y, unsigned int degree)
+LOSMNode::LOSMNode(unsigned long uid, float x, float y, unsigned int degree)
 {
 	this->uid = uid;
 	this->x = x;
@@ -40,7 +40,7 @@ LOSMNode::LOSMNode(unsigned int uid, float x, float y, unsigned int degree)
 LOSMNode::~LOSMNode()
 { }
 
-unsigned int LOSMNode::get_uid() const
+unsigned long LOSMNode::get_uid() const
 {
 	return uid;
 }
@@ -88,7 +88,7 @@ void LOSMNode::load(std::string filename, std::vector<const LOSMNode *> &result)
 		}
 
 		// Attempt to parse the unique identifier.
-		unsigned int nodeUID = 0;
+		unsigned long nodeUID = 0;
 		try {
 			nodeUID = std::stol(items[0]);
         } catch (const std::exception &err) {
@@ -123,7 +123,7 @@ void LOSMNode::load(std::string filename, std::vector<const LOSMNode *> &result)
 		// Attempt to parse the node's degree.
         unsigned int nodeDegree = 0;
 		try {
-			nodeDegree = std::stol(items[3]);
+			nodeDegree = std::stoi(items[3]);
         } catch (const std::exception &err) {
 			std::cerr << "Error[LOSMNode::load]: Failed to convert " << items[3] << " to an integer on line " <<
 					row << " in file '" << filename << "'." << std::endl;

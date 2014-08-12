@@ -29,7 +29,7 @@
 #include <iostream>
 #include <fstream>
 
-LOSMLandmark::LOSMLandmark(unsigned int uid, float x, float y, std::string name)
+LOSMLandmark::LOSMLandmark(unsigned long uid, float x, float y, std::string name)
 {
 	this->uid = uid;
 	this->x = x;
@@ -40,7 +40,7 @@ LOSMLandmark::LOSMLandmark(unsigned int uid, float x, float y, std::string name)
 LOSMLandmark::~LOSMLandmark()
 { }
 
-unsigned int LOSMLandmark::get_uid() const
+unsigned long LOSMLandmark::get_uid() const
 {
 	return uid;
 }
@@ -88,7 +88,7 @@ void LOSMLandmark::load(std::string filename, std::vector<const LOSMLandmark *> 
 		}
 
 		// Attempt to parse the unique identifier.
-		unsigned int landmarkUID = 0;
+		unsigned long landmarkUID = 0;
 		try {
 			landmarkUID = std::stol(items[0]);
         } catch (const std::exception &err) {

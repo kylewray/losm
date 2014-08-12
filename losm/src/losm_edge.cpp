@@ -103,7 +103,7 @@ void LOSMEdge::load(std::string filename, const std::vector<const LOSMNode *> no
 		}
 
 		// Attempt to parse the first node's unique identifier.
-		unsigned int edgeUID1 = 0;
+		unsigned long edgeUID1 = 0;
 		try {
 			edgeUID1 = std::stol(items[0]);
         } catch (const std::exception &err) {
@@ -129,7 +129,7 @@ void LOSMEdge::load(std::string filename, const std::vector<const LOSMNode *> no
         }
 
 		// Attempt to parse the second node's unique identifier.
-		unsigned int edgeUID2 = 0;
+		unsigned long edgeUID2 = 0;
 		try {
 			edgeUID2 = std::stol(items[1]);
         } catch (const std::exception &err) {
@@ -171,7 +171,7 @@ void LOSMEdge::load(std::string filename, const std::vector<const LOSMNode *> no
 		// Attempt to parse the edge's speed limit.
 		unsigned int edgeSpeedLimit = 0;
 		try {
-			edgeSpeedLimit = std::stol(items[4]);
+			edgeSpeedLimit = std::stoi(items[4]);
         } catch (const std::exception &err) {
 			std::cerr << "Error[LOSMEdge::load]: Failed to convert " << items[4] << " to an integer on line " <<
 					row << " in file '" << filename << "'." << std::endl;
@@ -182,7 +182,7 @@ void LOSMEdge::load(std::string filename, const std::vector<const LOSMNode *> no
 		// Attempt to parse the edge's lanes.
 		unsigned int edgeLanes = 0;
 		try {
-			edgeLanes = std::stol(items[5]);
+			edgeLanes = std::stoi(items[5]);
         } catch (const std::exception &err) {
 			std::cerr << "Error[LOSMEdge::load]: Failed to convert " << items[5] << " to an integer on line " <<
 					row << " in file '" << filename << "'." << std::endl;

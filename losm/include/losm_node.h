@@ -43,7 +43,7 @@ public:
 	 * @param	y		The y coordinate (longitude).
 	 * @param	degree	The degree of the node, meaning how many edges involve it.
 	 */
-	LOSMNode(unsigned int uid, float x, float y, unsigned int degree);
+	LOSMNode(unsigned long uid, float x, float y, unsigned int degree);
 
 	/**
 	 * The default deconstructor for the LOSMNode class.
@@ -54,7 +54,7 @@ public:
 	 * Get the unique identifier for the node.
 	 * @return	The unique identifier for the node.
 	 */
-	unsigned int get_uid() const;
+	unsigned long get_uid() const;
 
 	/**
 	 * Get the x coordinate (latitude).
@@ -86,7 +86,7 @@ private:
 	/**
 	 * The unique identifier for the node.
 	 */
-	unsigned int uid;
+	unsigned long uid;
 
 	/**
 	 * The x coordinate (latitude).

@@ -43,7 +43,7 @@ public:
 	 * @param	y		The y coordinate (longitude).
 	 * @param	name	The name of the landmark.
 	 */
-	LOSMLandmark(unsigned int uid, float x, float y, std::string name);
+	LOSMLandmark(unsigned long uid, float x, float y, std::string name);
 
 	/**
 	 * The default deconstructor for the LOSMLandmark class.
@@ -54,7 +54,7 @@ public:
 	 * Get the unique identifier for the landmark.
 	 * @return	The unique identifier for the landmark.
 	 */
-	unsigned int get_uid() const;
+	unsigned long get_uid() const;
 
 	/**
 	 * Get the x coordinate (latitude).
@@ -85,7 +85,7 @@ private:
 	/**
 	 * The unique identifier for the landmark.
 	 */
-	unsigned int uid;
+	unsigned long uid;
 
 	/**
 	 * The x coordinate (latitude).
