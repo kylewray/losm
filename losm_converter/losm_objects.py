@@ -89,8 +89,8 @@ class Edge:
     def __str__(self):
         """ Represent the edge as a string. """
 
-        return "Edge between Node %i and Node %i has name %s with distance %f and %i lanes" % \
-                (self.uid1, self.uid2, self.name, self.distance, self.lanes)
+        return "Edge between Node %i and Node %i has name %s with distance %f, speed limit %i, and %i lanes" % \
+                (self.uid1, self.uid2, self.name, self.distance, self.speedLimit, self.lanes)
 
 
     def data(self):

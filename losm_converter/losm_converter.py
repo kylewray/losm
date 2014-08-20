@@ -126,8 +126,9 @@ class LOSMConverter:
             # First, collect the important tag information from this way. These
             # have default values.
             name = "Unknown"
-            speedLimit = 25
+            speedLimit = None
             lanes = 2
+            highwayType = None
 
             for tag in way.iter("tag"):
                 if tag.attrib['k'] == "name":
@@ -137,6 +138,22 @@ class LOSMConverter:
                     speedLimit = tag.attrib['v'].split(" ")[0]
                 elif tag.attrib['k'] == "lanes":
                     lanes = tag.attrib['v']
+                elif tag.attrib['k'] == "highway":
+                    highwayType = tag.attrib['v']
+
+            if speedLimit == None:
+                if highwayType == "motorway":
+                    speedLimit = 65
+                elif highwayType == "trunk":
+                    speedLimit = 65
+                elif highwayType == "primary":
+                    speedLimit = 65
+                elif highwayType == "secondary":
+                    speedLimit = 50
+                elif highwayType == "tertiary":
+                    speedLimit = 40
+                else:
+                    speedLimit = 25
 
             nds = list(way.iter("nd"))
             for i, nd in enumerate(nds):
