@@ -83,7 +83,7 @@ class Edge:
         self.name = name
         self.distance = float(distance)
         self.speedLimit = int(speedLimit)
-        self.lanes = int(lanes)
+        self.lanes = int(str(lanes).split(';')[0])
 
 
     def __str__(self):
