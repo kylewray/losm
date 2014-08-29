@@ -112,16 +112,27 @@ class LOSMConverter:
         allNodes = {node.attrib['id']: node for node in list(tree.iter("node"))}
         allWays = list(tree.iter("way"))
 
+        # Both a list of valid highway types and a mapping from them to
+        # their default speed limits.
+        highwayTypes = {"motorway": 65, "motorway_link": 50,
+                        "trunk": 65, "trunk_link": 50,
+                        "primary": 65, "primary_link": 50,
+                        "secondary": 50,
+                        "tertiary": 40,
+                        "unclassified": 25,
+                        "residential": 25}
+
         # Find the list of all highways.
         highways = list()
         for way in allWays:
             for tag in way.iter("tag"):
-                if tag.attrib['k'] == "highway":
+                if tag.attrib['k'] == "highway" and \
+                        tag.attrib['v'] in set(highwayTypes.keys()):
                     highways += [way]
                     break
 
-        # Look at every pair of ways and determine if nodes exist in more than one way. If they
-        # do, then these are intersections, which we define as nodes in our graph.
+        # Look at every pair of ways and determine if nodes exist in more than one way.
+        # If they do, then these are intersections, which we define as nodes in our graph.
         for way in highways:
             # First, collect the important tag information from this way. These
             # have default values.
@@ -142,18 +153,23 @@ class LOSMConverter:
                     highwayType = tag.attrib['v']
 
             if speedLimit == None:
-                if highwayType == "motorway":
-                    speedLimit = 65
-                elif highwayType == "trunk":
-                    speedLimit = 65
-                elif highwayType == "primary":
-                    speedLimit = 65
-                elif highwayType == "secondary":
-                    speedLimit = 50
-                elif highwayType == "tertiary":
-                    speedLimit = 40
-                else:
-                    speedLimit = 25
+                #try:
+                speedLimit = highwayTypes[highwayType]
+                #except KeyError:
+                #    speedLimit = 25
+
+                #if highwayType == "motorway":
+                #    speedLimit = 65
+                #elif highwayType == "trunk":
+                #    speedLimit = 65
+                #elif highwayType == "primary":
+                #    speedLimit = 65
+                #elif highwayType == "secondary":
+                #    speedLimit = 50
+                #elif highwayType == "tertiary":
+                #    speedLimit = 40
+                #else:
+                #    speedLimit = 25
 
             nds = list(way.iter("nd"))
             for i, nd in enumerate(nds):
