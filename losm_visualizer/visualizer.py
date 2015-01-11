@@ -34,16 +34,7 @@ import random as rnd
 from policy import *
 
 import sys
-if len(sys.argv) > 1:
-    #sys.path.append("../../losm/losm_converter")
-    try:
-        sys.path.append(sys.argv[1])
-    except:
-        print("Error loading losm_converter.py and losm_objects.py.")
-        raise Exception()
-else:
-    print("Must specify path to losm_converter.py and losm_objects.py.")
-    raise Exception()
+sys.path.append("../losm_converter")
 
 from losm_converter import *
 from losm_objects import *
@@ -796,7 +787,6 @@ class LMDPVisualizer:
 
 
 if __name__ == "__main__":
-    # --- DEBUG ---
     h = dict()
 
     h['policyColor'] = sdl2.ext.Color(25, 150, 25)
@@ -805,22 +795,21 @@ if __name__ == "__main__":
     h['policyAutonomyCapableColor'] = sdl2.ext.Color(240, 240, 255)
 
     # Boston Commons Highlights
-    h['Mount Vernon Place'] = sdl2.ext.Color(200, 0, 0)
+    #h['Mount Vernon Place'] = sdl2.ext.Color(200, 0, 0)
 
     # Amherst (Small) Highlights
     #h['Gray Street'] = sdl2.ext.Color(200, 0, 0)
     #h['Rao\'s cafe'] = sdl2.ext.Color(0, 200, 0)
     #h['Amherst coffee'] = sdl2.ext.Color(0, 0, 200)
 
-    if len(sys.argv) == 4:
-        v = LMDPVisualizer(fastRender=sys.argv[2], highlight=h, filePrefix=sys.argv[3])
+    if len(sys.argv) == 3:
+        v = LMDPVisualizer(fastRender=sys.argv[1], highlight=h, filePrefix=sys.argv[2])
         v.execute()
-    elif len(sys.argv) == 5:
-        v = LMDPVisualizer(fastRender=sys.argv[2], highlight=h, filePrefix=sys.argv[3], policyFile=sys.argv[4])
+    elif len(sys.argv) == 4:
+        v = LMDPVisualizer(fastRender=sys.argv[1], highlight=h, filePrefix=sys.argv[2], policyFile=sys.argv[3])
         v.execute()
     else:
         print("python visualizer.py " +
-              "<path to losm_converter.py> " +
               "<0 or 1 for fast render > " +
               "<LOSM file prefix> " +
               "<optional, policy file name>")
