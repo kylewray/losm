@@ -15,5 +15,6 @@ How To Use With Lexicographic (PO)MDP Code
 ```
 #!/bin/bash
 cd ~/Development/losm/losm_visualizer
-python losm_visualizer.py 1600 900 1 \<path to resources\>/resources/\<output prefix\> \<path and name of policy file\>
+python losm_visualizer.py 1600 900 0 \<path to resources\>/resources/\<output prefix\> \<path and name of policy file\>
 ```
+7. In the visualizer, you can determine the pair of nodes which form a LOSMState in the (PO)MDP by right clicking. The command line will display the UID of the node, which can be used in the design of (PO)MDPs. This structure is defined in my LMDP and LPOMDP papers.
