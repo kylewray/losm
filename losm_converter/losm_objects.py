@@ -82,7 +82,7 @@ class Edge:
         self.uid2 = int(uid2)
         self.name = name
         self.distance = float(distance)
-        self.speedLimit = int(speedLimit)
+        self.speedLimit = int(str(speedLimit).split('m')[0])
         self.lanes = int(str(lanes).split(';')[0])
 
 
