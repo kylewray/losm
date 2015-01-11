@@ -55,21 +55,23 @@ class LMDPVisualizer:
         by solving the corresponding LMDP.
     """
 
-    def __init__(self, highlight=dict(), maxSize=1600, filePrefix=None, policyFile=None, fastRender=True):
+    def __init__(self, highlight=dict(), width=1600, height=900, maxSize=1600, filePrefix=None, policyFile=None, fastRender=True):
         """ The constructor for the LMDP class. Optionally, allow for the LOSM files
             to be loaded with the corresponding prefix. Also, optionally allow for
             the policy to be loaded.
 
             Parameters:
                 highlight   -- Highlight dictionary, mapping names of edges/landmarks to colors.
+                width       -- The width in pixels.
+                height      -- The height in pixels.
                 maxSize     -- The max size in pixels of width or height of the window.
                 filePrefix  -- The prefix for the three LOSM files.
                 policyFile  -- The policy file to load.
         """
 
         # Important: This must match 'maxSize' because <reasons></reasons>.
-        self.width = 1600
-        self.height = 900
+        self.width = width
+        self.height = height
 
         self.vwidth = maxSize
         self.vheight = maxSize
@@ -802,11 +804,18 @@ if __name__ == "__main__":
     #h['Rao\'s cafe'] = sdl2.ext.Color(0, 200, 0)
     #h['Amherst coffee'] = sdl2.ext.Color(0, 0, 200)
 
-    if len(sys.argv) == 3:
-        v = LMDPVisualizer(fastRender=sys.argv[1], highlight=h, filePrefix=sys.argv[2])
+    width = int(sys.argv[1])
+    height = int(sys.argv[2])
+    maxSize = max([width, height])
+
+    if len(sys.argv) == 5:
+        v = LMDPVisualizer(width=width, height=height, maxSize=maxSize, \
+                        fastRender=sys.argv[3], highlight=h, filePrefix=sys.argv[4])
         v.execute()
-    elif len(sys.argv) == 4:
-        v = LMDPVisualizer(fastRender=sys.argv[1], highlight=h, filePrefix=sys.argv[2], policyFile=sys.argv[3])
+    elif len(sys.argv) == 6:
+        v = LMDPVisualizer(width=width, height=height, maxSize=maxSize, \
+                        fastRender=sys.argv[3], highlight=h, filePrefix=sys.argv[4], \
+                        policyFile=sys.argv[5])
         v.execute()
     else:
         print("python visualizer.py " +
