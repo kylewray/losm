@@ -14,7 +14,6 @@ How To Use With Lexicographic (PO)MDP Code
 6. Write a script to run the LOSM visualizer of this form.
 <code>
 #!/bin/bash
-
 cd ~/Development/losm/losm_visualizer
 python losm_visualizer.py 1600 900 1 \<path to resources\>/resources/\<output prefix\> \<path and name of policy file\>
 </code>
