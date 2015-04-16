@@ -15,6 +15,6 @@ How To Use With Lexicographic (PO)MDP Code
 7. In the visualizer, you can determine the pair of nodes which form a LOSMState in the (PO)MDP by right clicking. The command line will display the UID of the node, which can be used in the design of (PO)MDPs. This structure is defined in my LMDP and LPOMDP papers.
 ```
 #!/bin/bash
-cd \<path to LOSM visualizer scripts\>
-python losm_visualizer.py 1600 900 0 \<path to resources\>/resources/\<output prefix\> \<path and name of policy file\>
+cd <path to LOSM visualizer scripts\>
+python losm_visualizer.py <window width (px)> <window height (px)> <0/1 - real-time render (vs cached texture)> <path to resources\>/resources/<output prefix\> <path and name of policy file\>
 ```
