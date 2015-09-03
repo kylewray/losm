@@ -50,6 +50,21 @@ class LOSMConverter:
             self.load(filePrefix)
 
 
+    def load(self, inputFile, interests=list()):
+        """ Load an input file and store the data in nodes, edges, and landmarks.
+
+            Parameters:
+                inputFile -- The input OSM file.
+                interests -- The list of interests (landmark types).
+        """
+
+        try:
+            with open(inputFile, 'r') as f:
+                self.convert(etree.parse(f), interests)
+        except IOError:
+            print("Failed to open file '%s'." % (inputFile))
+
+
     def execute(self, inputFile, outputFilePrefix, interests):
         """ Execute the entire process with the parameters specified.
 
@@ -97,12 +112,7 @@ class LOSMConverter:
             Parameters:
                 tree      -- The XML tree of the OSM file.
                 interests -- Optionally, specify the list of interests (amenity values) to keep
-                    as landmarks.
-
-            Returns:
-                nodes     -- The list of Node objects.
-                edges     -- The list of Edge objects.
-                landmarks -- The list of Landmark objects.
+                             as landmarks.
         """
 
         nodes = dict()
