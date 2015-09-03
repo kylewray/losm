@@ -1,6 +1,6 @@
 """ The MIT License (MIT)
 
-    Copyright (c) 2014 Kyle Wray
+    Copyright (c) 2015 Kyle Hollins Wray, University of Massachusetts
 
     Permission is hereby granted, free of charge, to any person obtaining a copy of
     this software and associated documentation files (the "Software"), to deal in
@@ -22,7 +22,12 @@
 
 from __future__ import print_function
 
+import os
 import sys
+
+thisFilePath = os.path.dirname(os.path.realpath(__file__))
+sys.path.append(thisFilePath)
+
 import math
 import csv
 
@@ -31,7 +36,7 @@ from lxml import etree
 from losm_objects import Node, Edge, Landmark
 
 
-class LOSMConverter:
+class LOSMConverter(object):
     """ A class which converts a OSM object to a set of three Light-OSM files. """
 
     def __init__(self, filePrefix=None):
@@ -50,8 +55,8 @@ class LOSMConverter:
             self.load(filePrefix)
 
 
-    def load(self, inputFile, interests=list()):
-        """ Load an input file and store the data in nodes, edges, and landmarks.
+    def open(self, inputFile, interests=list()):
+        """ Just open an input file and store the data in nodes, edges, and landmarks.
 
             Parameters:
                 inputFile -- The input OSM file.
@@ -63,6 +68,7 @@ class LOSMConverter:
                 self.convert(etree.parse(f), interests)
         except IOError:
             print("Failed to open file '%s'." % (inputFile))
+            raise Exception()
 
 
     def execute(self, inputFile, outputFilePrefix, interests):
@@ -80,6 +86,7 @@ class LOSMConverter:
                 self.save(outputFilePrefix)
         except IOError:
             print("Failed to open file '%s'." % (inputFile))
+            raise Exception()
 
 
     def haversine(self, lat1, lon1, lat2, lon2, miles=True):
@@ -101,7 +108,7 @@ class LOSMConverter:
         beta = 2.0 * math.atan2(math.sqrt(alpha), math.sqrt(1.0 - alpha))
 
         radiusOfEarth = 3961.0
-    #     radiusOfEarth = 6373.0
+        #radiusOfEarth = 6373.0
 
         return radiusOfEarth * beta
 
@@ -221,7 +228,7 @@ class LOSMConverter:
             nodes[str(edge.uid2)].degree += 1
 
         # Finally, store all this in the attributes of the class.
-        self.nodes = nodes.values()
+        self.nodes = list(nodes.values())
         self.edges = edges
         self.landmarks = landmarks
 

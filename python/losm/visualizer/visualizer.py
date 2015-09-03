@@ -1,6 +1,6 @@
 """ The MIT License (MIT)
 
-    Copyright (c) 2014 Kyle Wray
+    Copyright (c) 2015 Kyle Hollins Wray, University of Massachusetts
 
     Permission is hereby granted, free of charge, to any person obtaining a copy of
     this software and associated documentation files (the "Software"), to deal in
@@ -31,11 +31,14 @@ import math
 import numpy as np
 import random as rnd
 
+import os
+import sys
+
+thisFilePath = os.path.dirname(os.path.realpath(__file__))
+sys.path.append(thisFilePath)
 from policy import *
 
-import sys
-sys.path.append("../losm_converter")
-
+sys.path.append(os.path.join(thisFilePath, "..", "converter"))
 from losm_converter import *
 from losm_objects import *
 
@@ -50,7 +53,7 @@ RENDER_NORMAL_LINES = False
 AUTONOMY_SPEED_LIMIT_THRESHOLD = 30
 
 
-class LMDPVisualizer:
+class LMDPVisualizer(object):
     """ Provide a graphical visualization of the LOSM objects and the policy produced
         by solving the corresponding LMDP.
     """
@@ -789,6 +792,11 @@ class LMDPVisualizer:
 
 
 if __name__ == "__main__":
+    if len(sys.argv) != 5 and len(sys.argv) != 6:
+        print("Command line arguments are as follows:")
+        print("python losm_visualizer.py <window width (px)> <window height (px)> <0/1 - real-time render (vs cached texture)> <path to resources>/resources/<output prefix> <path and name of policy file>")
+        sys.exit(0)
+
     h = dict()
 
     h['policyColor'] = sdl2.ext.Color(25, 150, 25)

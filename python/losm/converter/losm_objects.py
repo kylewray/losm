@@ -1,6 +1,6 @@
 """ The MIT License (MIT)
 
-    Copyright (c) 2014 Kyle Wray
+    Copyright (c) 2015 Kyle Hollins Wray, University of Massachusetts
 
     Permission is hereby granted, free of charge, to any person obtaining a copy of
     this software and associated documentation files (the "Software"), to deal in
@@ -22,8 +22,14 @@
 
 from __future__ import print_function
 
+import os
+import sys
 
-class Node:
+thisFilePath = os.path.dirname(os.path.realpath(__file__))
+sys.path.append(thisFilePath)
+
+
+class Node(object):
     """ A node object, which simply stores an (x, y) location and a unique identifier. It
         also holds the degree of the node.
     """
@@ -61,7 +67,7 @@ class Node:
         return ",".join(map(str, [self.uid, self.x, self.y, self.degree]))
 
 
-class Edge:
+class Edge(object):
     """ An edge object, which stores two node ids, as well as the distance between them, and the
         road's speed limit.
     """
@@ -104,7 +110,7 @@ class Edge:
                 self.speedLimit, self.lanes]))
 
 
-class Landmark:
+class Landmark(object):
     """ A landmark object, which stores the (x, y) location and unique identifier of a landmark,
         as well as its name.
     """

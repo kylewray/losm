@@ -1,6 +1,6 @@
 """ The MIT License (MIT)
 
-    Copyright (c) 2014 Kyle Wray
+    Copyright (c) 2015 Kyle Hollins Wray, University of Massachusetts
 
     Permission is hereby granted, free of charge, to any person obtaining a copy of
     this software and associated documentation files (the "Software"), to deal in
@@ -25,12 +25,18 @@ from __future__ import print_function
 import csv
 import random as rnd
 
+import os
+import sys
+
+thisFilePath = os.path.dirname(os.path.realpath(__file__))
+sys.path.append(thisFilePath)
+
 
 NUM_TIREDNESS_LEVELS = 2
 TIREDNESS_PROBABILITY = 0.1
 
 
-class Policy:
+class Policy(object):
     """ A policy object specifically designed for LMDP and LOSM. """
 
     def __init__(self, policyFile):
