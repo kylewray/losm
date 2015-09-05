@@ -76,6 +76,8 @@ class LMDPVisualizer(object):
         self.width = width
         self.height = height
 
+        self.running = True
+
         self.vwidth = maxSize
         self.vheight = maxSize
 
@@ -245,13 +247,13 @@ class LMDPVisualizer(object):
             self._create_map(renderer)
 
         # Execute the main loop.
-        running = True
-        while running:
+        self.running = True
+        while self.running:
             events = sdl2.ext.get_events()
 
             for event in events:
                 if event.type == sdl2.SDL_QUIT:
-                    running = False
+                    self.running = False
                     #break
 
                 self._check_keyboard(event)
@@ -382,7 +384,9 @@ class LMDPVisualizer(object):
         elif event.type == sdl2.SDL_KEYUP:
             activateCamera = False
 
-            if event.key.keysym.sym == sdl2.SDLK_1:
+            if event.key.keysym.sym == sdl2.SDLK_ESCAPE:
+                self.running = False
+            elif event.key.keysym.sym == sdl2.SDLK_1:
                 self.camera['target'] = 1.0
                 activateCamera = True
             elif event.key.keysym.sym == sdl2.SDLK_2:

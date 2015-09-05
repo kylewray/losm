@@ -233,6 +233,47 @@ class LOSMConverter(object):
         self.landmarks = landmarks
 
 
+    def simplified_graph(self):
+        """ Return the simplified graph by removing all but the intersection nodes and the corresponding edges.
+
+            Returns:
+                nodes   --  A list of nodes in the new graph (Node objects).
+                edges   --  A list of edges in the new graph (Edge objects).
+        """
+
+        nodes = set()
+        edges = list()
+
+        getNode = {node.uid: node for node in self.nodes}
+        getEdge = {edge.uid1: edge for edge in self.edges}
+
+        # From this starting node, expand outwards following each outgoing edge until it reaches
+        # another intersection node.
+        for node in self.nodes:
+            if node.degree == 2:
+                continue
+
+            nodes |= {node}
+
+            # Check all outgoing edges and find the next intersection node.
+            outgoingEdges = [edge for edge in self.edges if edge.uid1 == node.uid]
+
+            for edge in outgoingEdges:
+                nodePrime = getNode[edge.uid2]
+
+                distance = edge.distance
+
+                while nodePrime.degree == 2:
+                    edgePrime = getEdge[nodePrime.uid]
+                    nodePrime = getNode[edgePrime.uid2]
+                    distance += edgePrime.distance
+
+                # Add a new edge which is the link between these new nodes, summing the distance traversed.
+                edges += [Edge(node.uid, nodePrime.uid, edge.name, distance, edge.speedLimit, edge.lanes)]
+
+        return list(nodes), edges
+
+
     def save(self, filePrefix):
         """ Save the nodes, edges, and landmarks as three separate files, given a file prefix.
 
