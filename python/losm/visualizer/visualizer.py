@@ -117,7 +117,6 @@ class LMDPVisualizer(object):
         if policyFile != None:
             self.load_policy(policyFile)
 
-
     def load_losm(self, filePrefix):
         """ Load the LOSM map given the file prefix.
 
@@ -418,6 +417,10 @@ class LMDPVisualizer(object):
 
             if event.key.keysym.sym == sdl2.SDLK_s:
                 self.showStateNodes = not self.showStateNodes
+
+            if event.key.keysym.sym == sdl2.SDLK_n:
+                self.losm.nodes, self.losm.edges = self.losm.simplified_graph()
+                print("Simplified graph to only consider intersections. This only renders with fastRender 0.")
 
             if event.key.keysym.sym == sdl2.SDLK_q:
                 self.tiredness = int(not self.tiredness)

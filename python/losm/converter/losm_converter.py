@@ -93,24 +93,28 @@ class LOSMConverter(object):
         """ Compute the Haversine distance (in miles, or km) given two lat/lon coordinates.
 
             Parameters:
-                lat1  -- The first latitude.
-                lon1  -- The first longitude.
-                lat2  -- The second latitude.
-                lon2  -- The second longitude.
+                lat1  -- The first latitude in degrees.
+                lon1  -- The first longitude in degrees.
+                lat2  -- The second latitude in degress.
+                lon2  -- The second longitude in degrees.
                 miles -- Do the computation in terms of miles, or kilometers.
         """
 
+        radiusOfEarthInMiles = 3959.0
+
+        # Convert everything from degrees to radians.
+        lat1, lon1, lat2, lon2 = map(math.radians, [lat1, lon1, lat2, lon2])
+
+        # Haversine formula.
         dlat = lat2 - lat1
         dlon = lon2 - lon1
 
-        alpha = pow(math.sin(dlat / 2.0), 2) \
-            + math.cos(lat1) * math.cos(lat2) * pow(math.sin(dlon / 2.0), 2)
-        beta = 2.0 * math.atan2(math.sqrt(alpha), math.sqrt(1.0 - alpha))
+        alpha = math.sin(dlat / 2.0) ** 2 + math.cos(lat1) * math.cos(lat2) * math.sin(dlon / 2.0) ** 2
+        beta = 2.0 * math.asin(math.sqrt(alpha))
 
-        radiusOfEarth = 3961.0
-        #radiusOfEarth = 6373.0
+        distanceInMiles = radiusOfEarthInMiles * beta
 
-        return radiusOfEarth * beta
+        return distanceInMiles
 
 
     def convert(self, tree, interests=list()):
@@ -245,7 +249,10 @@ class LOSMConverter(object):
         edges = list()
 
         getNode = {node.uid: node for node in self.nodes}
-        getEdge = {edge.uid1: edge for edge in self.edges}
+        getEdge1 = {edge.uid1: edge for edge in self.edges}
+        getEdge2 = {edge.uid2: edge for edge in self.edges}
+
+        simpleEdgesVisited = list()
 
         # From this starting node, expand outwards following each outgoing edge until it reaches
         # another intersection node.
@@ -256,20 +263,50 @@ class LOSMConverter(object):
             nodes |= {node}
 
             # Check all outgoing edges and find the next intersection node.
-            outgoingEdges = [edge for edge in self.edges if edge.uid1 == node.uid]
+            outgoingEdges = [edge for edge in self.edges if edge.uid1 == node.uid or edge.uid2 == node.uid]
 
             for edge in outgoingEdges:
-                nodePrime = getNode[edge.uid2]
+                nodePrime = None
+                if edge.uid1 == node.uid:
+                    nodePrime = getNode[edge.uid2]
+                elif edge.uid2 == node.uid:
+                    nodePrime = getNode[edge.uid1]
+
+                visitedNodes = [node.uid, nodePrime.uid]
 
                 distance = edge.distance
 
                 while nodePrime.degree == 2:
-                    edgePrime = getEdge[nodePrime.uid]
-                    nodePrime = getNode[edgePrime.uid2]
+                    edgePrime = None
+                    edgePrimeCandidates = [e for e in self.edges \
+                                            if e.uid1 == nodePrime.uid or \
+                                               e.uid2 == nodePrime.uid]
+
+                    for edgePrimeCandidate in edgePrimeCandidates:
+                        if edgePrimeCandidate.uid1 != nodePrime.uid and \
+                                edgePrimeCandidate.uid1 not in visitedNodes:
+                            edgePrime = edgePrimeCandidate
+                            nodePrime = getNode[edgePrime.uid1]
+                            break
+                        elif edgePrimeCandidate.uid2 != nodePrime.uid and \
+                                edgePrimeCandidate.uid2 not in visitedNodes:
+                            edgePrime = edgePrimeCandidate
+                            nodePrime = getNode[edgePrime.uid2]
+                            break
+
+                    if edgePrime is None:
+                        print("Warning: Strange roads in the map detected; removing them.")
+                        break
+
                     distance += edgePrime.distance
+                    visitedNodes += [nodePrime.uid]
 
                 # Add a new edge which is the link between these new nodes, summing the distance traversed.
-                edges += [Edge(node.uid, nodePrime.uid, edge.name, distance, edge.speedLimit, edge.lanes)]
+                # Also, make sure this edge has not already been added by following the path from
+                # the other direction.
+                if (node.uid, nodePrime.uid) not in simpleEdgesVisited:
+                    edges += [Edge(node.uid, nodePrime.uid, edge.name, distance, edge.speedLimit, edge.lanes)]
+                    simpleEdgesVisited += [(node.uid, nodePrime.uid), (nodePrime.uid, node.uid)]
 
         return list(nodes), edges
 
