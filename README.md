@@ -1,7 +1,12 @@
 losm
 ====
 
+Note: I'll write a tutorial soon. Until then, feel free to email me if you have questions.
+
 A library to manage OpenStreetMap (OSM) files in a new format: Lightweight OSM (LOSM) files. First, a python converter is included, which converts an OSM file to a collection of files in a very simple format. Also, C++ code is provided which loads the files as a weighted graph.
+
+If you use this code for your research, then feel free to cite our IJCAI 2015 paper:
+Wray, Kyle H. and Zilberstein, Shlomo. "Multi-Objective POMDPs with Lexicographic Reward Preferences." In the Proceedings of the Twenty-Fourth International Joint Conference of Artificial Intelligence (IJCAI), Buenos Aires, Argentina, July 2015.
 
 How To Use With Lexicographic (PO)MDP Code
 ------------------------------------------
